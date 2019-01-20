@@ -39,7 +39,7 @@ class Restful {
 			$this->_setupResources();
 			$this->_setupId();
 		} catch (Exception $e) {
-			$this->_json(['error'=>$e->getMessage(), 'code'=>$e->getCode()]);
+			$this->_json(['error'=>$e->getMessage()],$e->getCode());
 		}
 
 	}
@@ -47,7 +47,7 @@ class Restful {
 	private function _setupRequestMethod(){
 		$this->_requestMethod = $_SERVER['REQUEST_METHOD'];
 		if(!in_array($this->_requestMethod, $this->_allowRequestMethods)){
-			throw new Exception('Not an allowed request method', 405);
+			throw new Exception('Not an allowed request method',405);
 			
 		}
 	}
@@ -59,7 +59,10 @@ class Restful {
 	private function _setupId(){
 
 	}
-	private function _json($array){
+	private function _json($array,$code = 0){
+		if($code > 0 && $code != 200 && $code != 204){
+			header("HTTP/1.1 ".$code." ".$this->_statusCode[$code]);
+		}
 		header('Content-Type:application/json;charset=utf-8');
 		echo json_encode($array, JSON_UNESCAPED_UNICODE);
 		exit(); 
