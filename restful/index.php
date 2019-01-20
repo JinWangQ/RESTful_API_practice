@@ -1,5 +1,5 @@
 <?php 
-print_r($_SERVER);
+//print_r($_SERVER);
 
 require __DIR__.'/../lib/User.php';
 require __DIR__.'/../lib/Article.php';
@@ -37,7 +37,6 @@ class Restful {
 		try {
 			$this->_setupRequestMethod();
 			$this->_setupResources();
-			$this->_setupId();
 		} catch (Exception $e) {
 			$this->_json(['error'=>$e->getMessage()],$e->getCode());
 		}
@@ -53,12 +52,27 @@ class Restful {
 	}
 	// initialize request resources
 	private function _setupResources(){
+		$path = $_SERVER['PATH_INFO'];
+		//echo $path;
+		$params = explode('/',$path);
+		//print_r($params);
+		//Array
+		// (
+		//     [0] => 
+		//     [1] => articles
+		//     [2] => 123
+		// )
+		$this->_resourceName = $params[1]; // name of resources in $params[1]
+		if(!in_array($this->_resourceName, $this->_allowResources)){
+			throw new Exception('Request Resouces Not Allowed', 403);
+			
+		}
+		if(!empty($params[2])){
+			$this->_id = $params[2];
+		}
 
 	}
-	// initialize id of resources
-	private function _setupId(){
-
-	}
+	
 	private function _json($array,$code = 0){
 		if($code > 0 && $code != 200 && $code != 204){
 			header("HTTP/1.1 ".$code." ".$this->_statusCode[$code]);
