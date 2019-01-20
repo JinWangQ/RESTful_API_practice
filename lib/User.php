@@ -1,5 +1,5 @@
 <?php 
-require __DIR__."/ErrorCode.php";
+require_once __DIR__."/ErrorCode.php";
 class User{
 	private $_db;
 

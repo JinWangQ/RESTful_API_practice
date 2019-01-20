@@ -1,19 +1,26 @@
  <?php 
 date_default_timezone_set('EST');
 require __DIR__.'/lib/User.php';
- 
+require __DIR__.'/lib/Article.php';
 $pdo = require __DIR__.'/lib/db.php';
+
 //if(!$pdo){echo 'null';}else{echo 'not null';}
 //
-$user = new User($pdo);
+//
+//$user = new User($pdo);
+//
 //
 //if(!$user){echo 'null';}else{echo 'not null';}
 // $res = ;
 // if(!$res){echo 'null';}else{echo 'not null';}
 // 
 // 
-print_r($user->login('jin4','admin3')); 
+//print_r($user->login('jin4','admin3')); 
+//
+//
 
+$article = new Article($pdo);
+print_r($article->create('canada goose','it is so warm, is there a pants from goose?',3));
 
 // $dbms='mysql';     //数据库类型
 // $host='localhost:8889'; //数据库主机名
