@@ -84,6 +84,10 @@ class Article
 	}
 	// delete post
 	public function delete($article_id,$user_id){
+		$article = $this->view($article_id);
+		if($article['user_id'] !== $user_id){
+			throw new Exception('You cannot delete', ErrorCode::PERMISSION_DENIED);	
+		}
 		$sql = 'DELETE FROM `article` WHERE `article_id`=:article_id AND `user_id`=:user_id';
 		$stmt = $this->_db->prepare($sql);
 		$stmt->bindParam(':article_id',$article_id);
