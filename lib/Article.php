@@ -80,7 +80,19 @@ class Article
 	}
 	// get posts list
 	public function getList($user_id,$page=1,$size=10){
-
+		if($size > 100) {
+			throw new Exception('Page limited 100', ErrorCode::PAGE_LIMIT_EXCEED);
+		}
+		$sql = 'SELECT * FROM `article` WHERE `user_id`=:user_id LIMIT :limit, :offset';
+		$limit = ($page-1)*$size;
+		$limit = $limit < 0 ? 0 : $limit;
+		$stmt = $this->_db->prepare($sql);
+		$stmt->bindValue(':limit', $limit);
+		$stmt->bindValue(':offset', $size);
+		$stmt->bindValue('user_id', $user_id);
+		$stmt->execute();
+		$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		return $data;
 	}
 	// delete post
 	public function delete($article_id,$user_id){

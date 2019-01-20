@@ -23,7 +23,8 @@ $article = new Article($pdo);
 // print_r($article->create('canada goose','it is so warm, is there a pants from goose?',3));
 //print_r($article->edit(2,'how to train your dragon','Feb 22',3));
 //
-print_r($article->delete(1,1));
+//print_r($article->delete(1,1));
+print_r($article->getList(3,1,10));
 //
 //
 //
