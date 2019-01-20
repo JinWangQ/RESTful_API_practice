@@ -1,14 +1,18 @@
  <?php 
- 
+date_default_timezone_set('EST');
 require __DIR__.'/lib/User.php';
  
 $pdo = require __DIR__.'/lib/db.php';
 //if(!$pdo){echo 'null';}else{echo 'not null';}
+//
 $user = new User($pdo);
+//
 //if(!$user){echo 'null';}else{echo 'not null';}
 // $res = ;
 // if(!$res){echo 'null';}else{echo 'not null';}
-print_r($user->signup('admin','admin')); 
+// 
+// 
+print_r($user->signup('jin5','admin3')); 
 
 
 // $dbms='mysql';     //数据库类型
