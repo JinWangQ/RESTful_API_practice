@@ -55,6 +55,7 @@ class Article
 	//edit post
 	public function edit($article_id,$title,$content,$user_id){
 		$article = $this->view($article_id);
+		//var_dump($article['user_id'],$user_id);exit();
 		if($article['user_id'] !== $user_id){
 			throw new Exception('You cannot edit this post', ErrorCode::PERMISSION_DENIED);	
 		}
@@ -69,7 +70,7 @@ class Article
 		$stmt->bindValue(':content',$content);
 		$stmt->bindValue(':id',$article_id);
 		if(!$stmt->execute()){
-			throw new Exception('Edit post fail', EDIT_POST_FAIL);
+			throw new Exception('Edit post fail', ErrorCode::EDIT_POST_FAIL);
 		}
 		return [
 			'article_id'=>$article_id,
@@ -82,7 +83,15 @@ class Article
 
 	}
 	// delete post
-	public function delete($article_id,$title,$user_id){
+	public function delete($article_id,$user_id){
+		$sql = 'DELETE FROM `article` WHERE `article_id`=:article_id AND `user_id`=:user_id';
+		$stmt = $this->_db->prepare($sql);
+		$stmt->bindParam(':article_id',$article_id);
+		$stmt->bindParam(':user_id',$user_id);
 
+		if(!$stmt->execute()){
+			throw new Exception('Delete failed', ErrorCode::DELETE_POST_FAILED);
+		}
+		return true;
 	}
 }

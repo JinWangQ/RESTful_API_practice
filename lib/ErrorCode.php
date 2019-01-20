@@ -18,4 +18,5 @@ class ErrorCode
 	const ARTICLE_ID_CANNOT_EMPTY = 9;// article_id cannot empty
 	const ARTICLE_NOT_EXIST = 10; //article does not exist
 	const PERMISSION_DENIED =11; // edit article permission denied
+	const DELETE_POST_FAILED =12;
 }
