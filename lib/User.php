@@ -10,6 +10,35 @@ class User{
 
 	//user login
 	public function login($username, $password){
+		if(empty($username)){
+			//test
+			//return ErrorCode::USERNAME_CANNOT_EMPTY;
+			throw new Exception('Username cannot be empty', ErrorCode::USERNAME_CANNOT_EMPTY);
+		}
+		if(empty($password)){
+			//test
+			//return ErrorCode::PASSWORD_CANNOT_EMPTY;
+			throw new Exception('Password cannot be empty', ErrorCode::PASSWORD_CANNOT_EMPTY);
+		}
+		$sql = 'SELECT * FROM `user` WHERE `username`=:username AND `password`=:password';
+		$password = $this->_md5($password);
+		// print_r([
+		// 	'username' => $username,
+		// 	'password' => $password	
+		// ]);
+		// exit(0);
+		$stmt = $this->_db->prepare($sql);
+		$stmt->bindValue(':username', $username);
+		$stmt->bindValue(':password', $password);
+		$stmt->execute();
+		$user = $stmt->fetch(PDO::FETCH_ASSOC);
+		// var_dump($user);exit(0);
+		if(empty($user)){
+			throw new Exception('Wrong Username or password', ErrorCode::USERNAME_OR_PASSWORD_INVALID);
+		}
+		
+		unset($user['password']);
+		return $user;
 
 	}
 	//user sign up

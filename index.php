@@ -12,7 +12,7 @@ $user = new User($pdo);
 // if(!$res){echo 'null';}else{echo 'not null';}
 // 
 // 
-print_r($user->signup('jin5','admin3')); 
+print_r($user->login('jin4','admin3')); 
 
 
 // $dbms='mysql';     //数据库类型
