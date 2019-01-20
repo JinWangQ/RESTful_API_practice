@@ -14,10 +14,10 @@ class Article
 	//create new post
 	public function create($title,$content,$user_id){
 		if(empty($title)){
-			throw new Exception('article title is empty', ARTICLE_CANNOT_EMPTY);	
+			throw new Exception('article title is empty', ErrorCode::ARTICLE_CANNOT_EMPTY);	
 		}
 		if(empty($content)){
-			throw new Exception('content title is empty', CONTENT_CANNOT_EMPTY);	
+			throw new Exception('content title is empty', ErrorCode::CONTENT_CANNOT_EMPTY);	
 		}
 
 		$sql = 'INSERT INTO `article` (`title`,`content`,`user_id`) VALUES (:title,:content,:user_id)'; 
@@ -28,7 +28,7 @@ class Article
 		$stmt->bindValue(':user_id', $user_id);
 
 		if(!$stmt->execute()){
-			throw new Exception('Create new post fail', CREATE_NEW_POST_FAIL);
+			throw new Exception('Create new post fail', ErrorCode::CREATE_NEW_POST_FAIL);
 		}
 		return [
 			'article_id' => $this->_db->lastInsertId(),
@@ -37,9 +37,10 @@ class Article
 			'user_id' => $user_id
 		];
 	}
+	// view post
 	public function view($article_id){
 		if(empty($article_id)){
-			throw new Exception('article id cannot be empty', ARTICLE_ID_CANNOT_EMPTY);	
+			throw new Exception('article id cannot be empty', ErrorCode::ARTICLE_ID_CANNOT_EMPTY);	
 		}
 		$sql = 'SELECT * FROM `article` WHERE `article_id`=:id';
 		$stmt = $this->_db->prepare($sql);
@@ -47,13 +48,34 @@ class Article
 		$stmt->execute();
 		$article = $stmt->fetch(PDO::FETCH_ASSOC);
 		if(empty($article)){
-			throw new Exception('article does not exist', ARTICLE_NOT_EXIST);
+			throw new Exception('article does not exist', ErrorCode::ARTICLE_NOT_EXIST);
 		}
 		return $article;
 	}
 	//edit post
 	public function edit($article_id,$title,$content,$user_id){
-
+		$article = $this->view($article_id);
+		if($article['user_id'] !== $user_id){
+			throw new Exception('You cannot edit this post', ErrorCode::PERMISSION_DENIED);	
+		}
+		$title = empty($title) ? $article['title'] : $title;
+		$content = empty($content) ? $article['content'] : $content;
+		if($title === $article['title'] && $content === $article['content']){
+			return $article;
+		}
+		$sql = 'UPDATE `article` SET `title`=:title,`content`=:content WHERE `article_id`=:id';
+		$stmt = $this->_db->prepare($sql);
+		$stmt->bindValue(':title',$title);
+		$stmt->bindValue(':content',$content);
+		$stmt->bindValue(':id',$article_id);
+		if(!$stmt->execute()){
+			throw new Exception('Edit post fail', EDIT_POST_FAIL);
+		}
+		return [
+			'article_id'=>$article_id,
+			'title' => $title,
+			'content' => $content
+		];
 	}
 	// get posts list
 	public function getList($user_id,$page=1,$size=10){

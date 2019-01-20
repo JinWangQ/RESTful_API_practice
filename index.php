@@ -21,7 +21,7 @@ $pdo = require __DIR__.'/lib/db.php';
 
 $article = new Article($pdo);
 // print_r($article->create('canada goose','it is so warm, is there a pants from goose?',3));
-print_r($article->view(4));
+print_r($article->edit(2,'how to train your dragon','Feb 22','3'));
 // $dbms='mysql';     //数据库类型
 // $host='localhost:8889'; //数据库主机名
 // $dbName='mydb';    //使用的数据库
