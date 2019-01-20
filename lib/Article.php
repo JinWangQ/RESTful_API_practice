@@ -37,6 +37,20 @@ class Article
 			'user_id' => $user_id
 		];
 	}
+	public function view($article_id){
+		if(empty($article_id)){
+			throw new Exception('article id cannot be empty', ARTICLE_ID_CANNOT_EMPTY);	
+		}
+		$sql = 'SELECT * FROM `article` WHERE `article_id`=:id';
+		$stmt = $this->_db->prepare($sql);
+		$stmt->bindValue(':id',$article_id);
+		$stmt->execute();
+		$article = $stmt->fetch(PDO::FETCH_ASSOC);
+		if(empty($article)){
+			throw new Exception('article does not exist', ARTICLE_NOT_EXIST);
+		}
+		return $article;
+	}
 	//edit post
 	public function edit($article_id,$title,$content,$user_id){
 

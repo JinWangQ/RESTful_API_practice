@@ -15,4 +15,6 @@ class ErrorCode
 	const ARTICLE_CANNOT_EMPTY = 6; //article title connot empty
 	const CONTENT_CANNOT_EMPTY = 7; //content connot empty
 	const CREATE_NEW_POST_FAIL = 8; // create new post failed
+	const ARTICLE_ID_CANNOT_EMPTY = 9;// article_id cannot empty
+	const ARTICLE_NOT_EXIST = 10;
 }
