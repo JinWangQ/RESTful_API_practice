@@ -30,7 +30,10 @@ class User{
 		$stmt = $this->_db->prepare($sql);
 		$stmt->bindValue(':username', $username);
 		$stmt->bindValue(':password', $password);
-		$stmt->execute();
+		if(!$stmt->execute()){
+			throw new Exception("Server internal error",ErrorCode:: SERVER_INTERNAL_ERROR );
+			
+		}
 		$user = $stmt->fetch(PDO::FETCH_ASSOC);
 		// var_dump($user);exit(0);
 		if(empty($user)){

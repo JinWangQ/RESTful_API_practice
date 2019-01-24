@@ -20,4 +20,6 @@ class ErrorCode
 	const PERMISSION_DENIED =11; // edit article permission denied
 	const DELETE_POST_FAILED =12; // delete post failed
 	const PAGE_LIMIT_EXCEED = 13; // page size too large
+	
+	const SERVER_INTERNAL_ERROR = 14; //server internal error;
 }

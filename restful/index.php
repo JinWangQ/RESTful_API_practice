@@ -102,6 +102,79 @@ class Restful {
 		return  $this->_user->signup($body['username'],$body['password']);
 		
 	}
+
+	
+	// Request for Articles resources
+	private function _handleArticle(){
+		switch($this->_requestMethod){
+			case 'POST':
+				return $this->_handleArticleCreate();
+			case 'PUT':
+				return $this->_handleArticleEdit();
+			case 'DELETE':
+				return $this->_handleArticleDelete();
+			case 'GET':
+				if(empty($this->id)){
+					return $this->_handleArticleList();
+				}else{
+					return $this->_handleArticleView();
+				}
+			default:
+			throw new Exception('Request method is not allowed', 405);
+		}
+	}
+
+	private function _handleArticleCreate(){
+		$body = $this->_getBodyParams();
+		if(empty($body['title'])){
+			throw new Exception('Post title cannot be empty', 400);
+		}if(empty($body['content'])){
+			throw new Exception('Post content cannot be empty', 400);
+		}
+		$user = $this->_userLogin($_SERVER['PHP_AUTH_USER'],$_SERVER['PHP_AUTH_PW']);
+		try{
+			$article = $this->_article->create($body['title'],$body['content'],$user['user_id']);
+			return $article;
+		}catch(Exception $e){
+			if(!is_array($e->getMessage(),
+			[
+				ErrorCode::ARTICLE_CANNOT_EMPTY,
+				ErrorCode::CONTENT_CANNOT_EMPTY
+			])){
+				throw new Exception($e->getMessage(), 400);
+			}
+			throw new Exception($e->getMessage(), 500);
+			
+		}
+
+	}
+	private function _handleArticleEdit(){
+		
+	}
+	private function _handleArticleDelete(){
+		
+	}
+	private function _handleArticleList(){
+		
+	}
+	private function _handleArticleView(){
+		
+	}
+	private function _userLogin($PHP_AUTH_USER, $PHP_AUTH_PW){
+		try{
+			return $this->_user->login($PHP_AUTH_USER, $PHP_AUTH_PW);
+		}catch(Exception $e){
+			if(in_array($e->getCode(),
+				[
+					ErrorCode::USERNAME_CANNOT_EMPTY,
+					ErrorCode::PASSWORD_CANNOT_EMPTY,
+					ErrorCode::USERNAME_OR_PASSWORD_INVALID
+				])) {
+					throw new Exception($e->getMessage(), 400);
+			}
+			throw new Exception($e->getMessage(), 500);
+		}
+	}
 	// get request body
 	private function _getBodyParams(){
 		$raw = file_get_contents('php://input');
@@ -109,10 +182,6 @@ class Restful {
 			throw new Exception('Request Params Error', 400);
 		}
 		return json_decode($raw,true);  
-	}
-	// Request for Articles resources
-	private function _handleArticle(){
-
 	}
 }
 
