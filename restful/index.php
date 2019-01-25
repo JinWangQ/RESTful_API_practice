@@ -78,11 +78,17 @@ class Restful {
 	}
 	
 	private function _json($array,$code = 0){
-		if($code > 0 && $code != 200 && $code != 204){
-			header("HTTP/1.1 ".$code." ".$this->_statusCode[$code]);
+		if($array == null && $code === 0){
+			$code = 204;
 		}
+		if($array !== null && $code === 0 ){
+			$code = 200;
+		}
+		header("HTTP/1.1 ".$code." ".$this->_statusCode[$code]);
 		header('Content-Type:application/json;charset=utf-8');
-		echo json_encode($array, JSON_UNESCAPED_UNICODE);
+		if($array !== null){
+			echo json_encode($array, JSON_UNESCAPED_UNICODE);
+		}
 		exit(); 
 	}
 	// Request for user resources
@@ -149,10 +155,55 @@ class Restful {
 
 	}
 	private function _handleArticleEdit(){
-		
+		$user = $this->_userLogin($_SERVER['PHP_AUTH_USER'],$_SERVER['PHP_AUTH_PW']);
+		try{
+			$article = $this->_article->view($this->_id);
+			if($article['user_id'] != $user['user_id']){
+				throw new Exception("You cannot edit this post", 403);	
+			}
+			$body = $this->_getBodyParams();
+			// var_dump($body);
+			$title = empty($body['title']) ? $article['title']: $body['title'];
+			$content = empty($body['content']) ? $article['content'] : $body['content'];
+			if($title == $article['title'] && $content == $article['content']){
+				return $article;
+			}
+			return $this->_article->edit($article['article_id'],$title,$content,$user['user_id']);
+		}catch(Exception $e ){
+			if($e->getCode() < 100){
+				if($e->getCode() == ErrorCode::ARTICLE_NOT_EXIST){
+					throw new Exception($e->getMessage(), 404);
+				}else{
+					throw new Exception($e->getMessage(), 400);
+				}
+			}else{
+				throw $e;
+			}
+		}
 	}
+	
 	private function _handleArticleDelete(){
-		
+		$user = $this->_userLogin($_SERVER['PHP_AUTH_USER'],$_SERVER['PHP_AUTH_PW']);
+		try{
+			$article = $this->_article->view($this->_id);
+			if($article['user_id'] != $user['user_id']){
+				throw new Exception("You cannot delete this post", 403);	
+			}
+			$this->_article->delete($article['article_id'],$user['user_id']);
+			return null;
+		}catch(Exception $e){
+			// this part is the same as the above edit part, 
+			// check if this user can edit this post
+			if($e->getCode() < 100){
+				if($e->getCode() == ErrorCode::ARTICLE_NOT_EXIST){
+					throw new Exception($e->getMessage(), 404);
+				}else{
+					throw new Exception($e->getMessage(), 400);
+				}
+			}else{
+				throw $e;
+			}
+		}
 	}
 	private function _handleArticleList(){
 		
