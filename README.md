@@ -18,6 +18,7 @@ password : 'root'
 
 ### PHP
 *php connect to database in MAMP*
+
 change MySQL port to 8889
 ```php
 // /lib/db.php
@@ -28,4 +29,5 @@ return $pdo;
 
 ### Test tool
 *[Postman](https://www.getpostman.com/)*
+
 *[Restlet Client](https://chrome.google.com/webstore/detail/restlet-client-rest-api-t/aejoelaoggembcahagimdiliamlcdmfm)*
