@@ -31,3 +31,12 @@ return $pdo;
 *[Postman](https://www.getpostman.com/)*
 
 *[Restlet Client](https://chrome.google.com/webstore/detail/restlet-client-rest-api-t/aejoelaoggembcahagimdiliamlcdmfm)*
+
+### Test Result
+*Sign up a new user by Postman*
+
+![Sign up](https://i.loli.net/2019/01/28/5c4e2cc74aaba.png)
+
+*Create a new post by Restlet Client*
+
+![Create a new post](https://i.loli.net/2019/01/28/5c4e2cfd8ab9d.png)
