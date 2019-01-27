@@ -240,8 +240,7 @@ class Restful {
 			}else{
 				throw new Exception($e->getMessage(), 500);	
 			}
-		}
-		
+		}		
 	}
 	private function _userLogin($PHP_AUTH_USER, $PHP_AUTH_PW){
 		try{
