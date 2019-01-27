@@ -40,7 +40,7 @@ class Restful {
 			if($this->_resourceName == 'users'){
 				return $this->_json($this->_handleUser());
 			}else{
-				return $this->_handleArticle();
+				return $this->_json($this->_handleArticle());
 			}
 		} catch (Exception $e) {
 			$this->_json(['error'=>$e->getMessage()],$e->getCode());
@@ -228,9 +228,19 @@ class Restful {
 		if($size > 100){
 			throw new Exception("Page is too large", 400);
 		}
-		print_r($this->_article->getList($user['user_id'], $page, $size));
+		return $this->_article->getList($user['user_id'], $page, $size);
 	}
 	private function _handleArticleView(){
+		try {
+			//print_r($this->_article->view($this->_id));
+			return $this->_article->view($this->_id);
+		} catch (Exception $e) {
+			if($e->getCode() == ErrorCode::ARTICLE_NOT_EXIST){
+				throw new Exception($e->getMessage(), 404);
+			}else{
+				throw new Exception($e->getMessage(), 500);	
+			}
+		}
 		
 	}
 	private function _userLogin($PHP_AUTH_USER, $PHP_AUTH_PW){
