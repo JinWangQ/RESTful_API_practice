@@ -112,22 +112,38 @@ class Restful {
 	
 	// Request for Articles resources
 	private function _handleArticle(){
-		switch($this->_requestMethod){
-			case 'POST':
-				return $this->_handleArticleCreate();
-			case 'PUT':
-				return $this->_handleArticleEdit();
-			case 'DELETE':
-				return $this->_handleArticleDelete();
-			case 'GET':
-				if(empty($this->id)){
-					return $this->_handleArticleList();
-				}else{
-					return $this->_handleArticleView();
-				}
-			default:
+		$method = $this->_requestMethod;
+		if($method == 'POST'){
+			return $this->_handleArticleCreate();
+		}else if($method == 'PUT'){
+			return $this->_handleArticleEdit();
+		}else if($method == 'DELETE'){
+			return $this->_handleArticleDelete();
+		}else if($method == 'GET'){
+			if(empty($this->_id)){
+				return $this->_handleArticleList();
+			}else{
+				return $this->_handleArticleView();
+			}
+		}else{
 			throw new Exception('Request method is not allowed', 405);
 		}
+		// switch($this->_requestMethod){
+		// 	case 'POST':
+		// 		return $this->_handleArticleCreate();
+		// 	case 'PUT':
+		// 		return $this->_handleArticleEdit();
+		// 	case 'DELETE':
+		// 		return $this->_handleArticleDelete();
+		// 	case 'GET':
+		// 		if(empty($this->_id)){
+		// 			return $this->_handleArticleList();
+		// 		}else{
+		// 			return $this->_handleArticleView();
+		// 		}
+		// 	default:
+		// 	throw new Exception('Request method is not allowed', 405);
+		// }
 	}
 
 	private function _handleArticleCreate(){
@@ -206,7 +222,13 @@ class Restful {
 		}
 	}
 	private function _handleArticleList(){
-		
+		$user = $this->_userLogin($_SERVER['PHP_AUTH_USER'],$_SERVER['PHP_AUTH_PW']);
+		$page = isset($_GET['page']) ? $_GET['page'] : 1;
+		$size = isset($_GET['size']) ? $_GET['size'] : 10;
+		if($size > 100){
+			throw new Exception("Page is too large", 400);
+		}
+		print_r($this->_article->getList($user['user_id'], $page, $size));
 	}
 	private function _handleArticleView(){
 		

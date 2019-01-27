@@ -1,6 +1,6 @@
 <?php  
 
-
+require_once __DIR__."/ErrorCode.php";
 /**
  * article
  */
@@ -73,7 +73,7 @@ class Article
 			throw new Exception('Edit post fail', ErrorCode::EDIT_POST_FAIL);
 		}
 		return [
-			'article_id'=>$article_id,
+			'article_id' => $article_id,
 			'title' => $title,
 			'content' => $content
 		];
@@ -87,12 +87,14 @@ class Article
 		$limit = ($page-1)*$size;
 		$limit = $limit < 0 ? 0 : $limit;
 		$stmt = $this->_db->prepare($sql);
+		$stmt->bindValue(':user_id', $user_id);
 		$stmt->bindValue(':limit', $limit);
 		$stmt->bindValue(':offset', $size);
-		$stmt->bindValue('user_id', $user_id);
 		$stmt->execute();
 		$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		//print_r($data);
 		return $data;
+	
 	}
 	// delete post
 	public function delete($article_id,$user_id){

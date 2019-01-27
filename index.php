@@ -24,7 +24,7 @@ $article = new Article($pdo);
 //print_r($article->edit(2,'how to train your dragon','Feb 22',3));
 //
 //print_r($article->delete(1,1));
-print_r($article->getList(3,1,10));
+print_r($article->getList(7,1,10));
 //
 //
 //
